@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+	<head>
+		<title>LOL</title>
+		<link rel="stylesheet" href="/style/im.css">
+
+		<script src="/socket.io/socket.io.js"></script>
+		<script src="/js/moment/min/moment.min.js"></script>
+		<script src="http://code.jquery.com/jquery-3.1.0.min.js"></script>
+		<script>
+		  var socket = io();
+		  
+		  $(document).ready(function(){
+			$('form').submit(function () {
+				//alert('win!');
+				socket.emit('chat message', $('#m').val());
+				$('#m').val('');
+				return false;
+			});
+			socket.on('chat message', function (msg) {
+				var d = new Date();
+				msg = '[' + d.getDate() + '-' + (d.getMonth() + 1) +'-'+ d.getFullYear() +' '+ d.getHours() +':'+ d.getMinutes() +':'+ d.getSeconds() + '|' + msg;
+				$('#messages').append($('<li>').text(msg));
+			});
+			socket.on('system message', function (msg) {
+				var d = new Date();
+				msg = '[' + d.getDate() + '-' + (d.getMonth() + 1) +'-'+ d.getFullYear() +' '+ d.getHours() +':'+ d.getMinutes() +':'+ d.getSeconds() + '|' + msg;
+				$('#messages').append($('<li>').text(msg).addClass('system'));
+			});
+		  });   
+		</script>
+
+
+	</head>
+	<body>
+
+		<ul id="messages"/>
+		<form action="">
+			<input id="m" autocomplete="off" />
+			<button id="sendButton">Send</button>
+		</form>
+		
+		
+
+		
+	</body>
+</html>

@@ -1,0 +1,134 @@
+* {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	box-sizing: border-box;
+}
+
+html {
+	height:100%;
+}
+
+body {
+	height:100%;
+	font: 13px Helvetica, Arial;
+}
+
+div.chat-div {
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	padding-bottom: 40px;
+	padding-right: 250px;
+}
+
+div.chat-div div {
+	overflow-y:auto;
+	height: 100%;
+	width: 100%;
+}
+
+div.user-list {
+	overflow-y: auto;
+	position: fixed;
+	right: 0;
+	width: 250px;
+	height: 100%;
+	padding-bottom: 40px;
+	background-color: #ffa200;
+	padding-left: 3px;
+	
+}
+
+div.user-list ul{
+	overflow-y: auto;
+	list-style-type: none;
+	background-color: #fff;
+	width:100%;
+	height:100%;
+}
+
+div.user-list ul li {
+	padding: 5px 10px;
+	width:100%;
+}
+
+div.user-list ul li:hover {
+	background-color:#ffe6ba;
+}
+
+div.user-list ul li.user-list-header {
+	background-color:#ffa200;
+	text-align:center;
+}
+
+div.global-input {
+	position:fixed;
+	bottom:0;
+	height:40px;
+	width:100%;
+	background-color:#ffa200;
+	
+}
+
+div.global-input form {
+	width: 100%;
+	height: 40px;
+	margin-top: 3px;
+}
+
+div.global-input form input {
+	padding: 10px 0px;
+	width: 90%;
+}
+
+div.global-input form button {
+	width: 10%;
+	background-color: #ffc96b;
+	padding: 9px 0px;
+}
+
+div.global-input form button:hover {
+	background-color: #ffe6ba;
+}
+
+div.global-input form button:active {
+	background-color: #ff7e00;
+}
+
+.time {
+	font-family: Consolas, Lucida Console;
+	color: #979aaa;
+}
+
+#messages {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+
+#messages li {
+	padding: 5px 10px;
+}
+
+#messages li:nth-child(odd) {
+	background: #ffe6ba;
+}
+
+#messages li.system {
+	font-family: Consolas, Lucida Console;
+	font-style:italic;
+	color:#a26802;
+}
+
+#messages li.critical {
+	background-color: #ffcac6;
+}
+
+#messages li.accept {
+	background-color: #d7ffc2;
+}
+
+#messages li.notification {
+	background-color: #d7ecfe;
+}
