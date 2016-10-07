@@ -4,8 +4,10 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var moment = require('moment');
 
+
 // порт для прослушки адреса в http запросе
-var httport = 1337;
+// process.env.PORT -- for Bluemix
+var httport = process.env.PORT || 1337;
 // Массив юзеров в вакууме (ID + никнейм)
 // Содержит структуру:
 // {
@@ -59,6 +61,7 @@ for (var field in object){
 */
 
 app.use('/style', express.static(__dirname + '/style')); // открытый доступ к разделу /style
+//app.use('/socket.io', express.static(__dirname + '/node_modules/socket.io-client')); // открытый доступ к либе socket.io
 app.use('/js', express.static(__dirname + '/js')); // открытый доступ к разделу библиотек, загружаемых не через npm
 app.use('/js/moment', express.static(__dirname + '/node_modules/moment')); // открытый доступ к библиотеке moments.js
 
@@ -215,7 +218,7 @@ function isBanned(ip){
 	return blackList[ip];
 }
 
-
+//LOAD SERVER
 http.listen(httport, function () {
 	console.log('listening on *:' + httport);
 });
