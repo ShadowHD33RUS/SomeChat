@@ -61,6 +61,7 @@ for (var field in object){
 */
 
 app.use('/style', express.static(__dirname + '/style')); // открытый доступ к разделу /style
+app.use('/sound', express.static(__dirname + '/sound')); // открытый доступ к разделу /sound
 //app.use('/socket.io', express.static(__dirname + '/node_modules/socket.io-client')); // открытый доступ к либе socket.io
 app.use('/js', express.static(__dirname + '/js')); // открытый доступ к разделу библиотек, загружаемых не через npm
 app.use('/js/moment', express.static(__dirname + '/node_modules/moment')); // открытый доступ к библиотеке moments.js

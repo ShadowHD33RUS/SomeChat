@@ -16,6 +16,17 @@
 		var user_list_width = false;
 		var users;
 		
+		
+		//var notif = notification();
+		//
+		//if (/*@cc_on!@*/false) { // check for Internet Explorer
+		//	document.onfocusin = onFocus;
+		//	document.onfocusout = onBlur;
+		//} else {
+		//	window.onfocus = onFocus;
+		//	window.onblur = onBlur;
+		//}
+		
 		$(document).ready(function(){
 			var socket = io();
 				global_input_height = $('#global-input').height();
@@ -85,6 +96,7 @@
 				 * 
 				 */
 				
+				notif(); // уведомление о сообщении пользователя
 				chatMessage(msg.username,msg.text);
 			});
 			
@@ -216,11 +228,24 @@
 			}
 		}
 		
+		function notif(){
+			/* Занимается уведомлениями.
+			 * 
+			 */
+			
+			$('#notification-sound')[0].play();
+		}
+		
 		</script>
 
 
 	</head>
 	<body>
+		<audio id="notification-sound" preload="auto">
+			<source src="sound/knob.ogg" type="audio/ogg" >
+			<source src="sound/knob.mp3" type="audio/mp3" >
+		</audio>
+		
 		<div id="chat-div" class="chat-div"><div><ul id="messages">
 			</ul></div>
 		</div><div id="user-list" class="user-list"><ul>
