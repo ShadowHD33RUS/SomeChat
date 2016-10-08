@@ -2,7 +2,7 @@
   "name": "ShadowHD",
   "email" : "shadowhd@list.ru",
   "url" : "http://shadowhd.ru",
-  "version": "0.1.0",
+  "version": "0.1.5",
   "description": "socket.io chat",
   "license" : "MIT",
   "dependencies": {
