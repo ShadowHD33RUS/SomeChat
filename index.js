@@ -4,6 +4,28 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var moment = require('moment');
 
+var mysql = require('mysql');
+var mysqlu = require('mysql-utilities');
+var mysqlinfo;
+
+// Для защиты данные подцепляются из внешнего файла JSON
+// Если файл не создан, то информация о БД сохраняется из catch()
+// Проверки файла нет, структура у него должна быть такая же,
+// как в объекте в catch(). Если структура не верна, коннекшон
+// не пройдет.
+try {
+	mysqlinfo = require('./mysql.json');
+} catch(e) {
+	mysqlinfo = {
+		host:     'localhost',
+		user:     'userName',
+		password: 'secret',
+		database: 'databaseName'
+	}
+}
+
+var connection = mysql.createConnection(mysqlinfo);
+
 
 // порт для прослушки адреса в http запросе
 // process.env.PORT -- for Bluemix
@@ -225,4 +247,10 @@ function isBanned(ip){
 //LOAD SERVER
 http.listen(httport, function () {
 	console.log('listening on *:' + httport);
+	var conuser = connection.config.user+'@'+connection.config.host;
+	if (connection.state == 'disconnected'){
+		console.error('CAN NOT CONNECTED TO BD '+conuser);
+	} else {
+		console.log('Connection established to '+conuser);
+	}
 });

@@ -1,2 +1,5 @@
-node_modules
-sound
+node_modules/
+sound/
+.cfignore
+manifest.yml
+mysql.json
