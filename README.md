@@ -3,7 +3,7 @@
 Something like chat, written on Node.JS. With Russian comments. It's not needed to you.
 
 ### Version
-0.1.0
+0.1.7
 
 ## If you still want to run it
 
