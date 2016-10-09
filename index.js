@@ -246,11 +246,18 @@ function isBanned(ip){
 
 //LOAD SERVER
 http.listen(httport, function () {
-	console.log('listening on *:' + httport);
 	var conuser = connection.config.user+'@'+connection.config.host;
-	if (connection.state == 'disconnected'){
-		console.error('CAN NOT CONNECTED TO BD '+conuser);
-	} else {
-		console.log('Connection established to '+conuser);
+	
+	console.log('listening on *:' + httport);
+	
+	try {
+		connection.connect();
+		console.log('Successful connection to '+conuser);
+	} catch (e) {
+		console.error("CAN'T CONNECTED TO BD "+conuser+"!!!");
+		console.log(e);
+	} finally {
+		connection.end();
 	}
+	
 });
