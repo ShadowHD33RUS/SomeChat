@@ -104,7 +104,7 @@ io.on('connection', function (socket) {
 		sendAlert(socket, 'Вы были забанены в этом чате ');
 	}
 	
-	if (users[socket.id] == undefined){
+	if (users[socket.id] === undefined){
 		sendSys(io.to('global'), 'К чату присоеденился анон.');
 		//sendMe(socket,createMsg('SERVER MESSAGE','Анон! Мы всё еще ждем, когда ты скажешь, как тебя зовут'));
 	}
@@ -149,14 +149,15 @@ io.on('connection', function (socket) {
 		
 		if (msg != '') {
 			msg.slice(0,500);
-			if (users[socket.id] == undefined){
+			if (users[socket.id] === undefined){
 				var name = msg.split(' ',1)[0].slice(0,16);
-				if (userNames[name] == undefined){
+				if (userNames[name] === undefined){
 					
 					users[socket.id] = name;
 					userNames[name] = socket.id;
 					
 					sendSys(io.to('global'), '  Паперветствуем нового чувака "'+name+'"!');
+					getLastMessagesFromBD(socket);
 					socket.join('global');
 					
 					/* Так типа как бы лучше, чем как есть. Но так пилить долго...
@@ -170,6 +171,7 @@ io.on('connection', function (socket) {
 				}
 			} else {
 				sendAll(socket,createMsg(users[socket.id],msg));
+				saveMessageToBD(users[socket.id],msg,socket.request.connection.remoteAddress);
 			}
 		}
 	});
@@ -204,7 +206,7 @@ function sendUsers(s,username){
 	 * Удобно использовать для отправки личных сообщений в чат от лица системы (например, приветствие).
 	 * s - должен быть только socket.
 	 */
-	if (username == undefined){
+	if (username === undefined){
 		for (var i in userNames){
 			unarr.push(i);
 		}
@@ -238,24 +240,19 @@ function isBanned(ip){
 	 * добавляет ip в список, если пользователь не найден, и возвращает false.
 	 * 
 	 */
-	if (blackList[ip] == undefined) {
+	if (blackList[ip] === undefined) {
 		blackList[ip] = false;
 		return false;
 	}
 	return blackList[ip];
 }
 
-//LOAD SERVER
-http.listen(httport, function () {
-	//var conuser = connection.config.user+'@'+connection.config.host;
-	var conuser = pool.config.user+'@'+pool.config.host;
-	
-	console.log('listening on *:' + httport);
-	
-	
-	pool.getConnection(function(err, connection){    
-		//run the query
-		connection.query('select * from ad_3e3806afa571fe4.global_messages', function(err, rows){
+function saveMessageToBD(nick,msg,ip){
+	/* Сохраняет каждое сообщение пользователей в БД.
+	 * 
+	 */
+	pool.getConnection(function(err, connection){
+		connection.query("INSERT INTO `ad_3e3806afa571fe4`.`global_messages` (`nick`, `msg`, `ip`, `time`) VALUES ('"+nick+"', '"+msg+"', '"+ip+"', NOW());", function(err, rows){
 			if(err) throw err;
 			else {
 				console.log(rows);
@@ -264,6 +261,48 @@ http.listen(httport, function () {
 		
 		connection.release();//release the connection
 	});
+}
+
+function getLastMessagesFromBD(s){
+	/* Вытаскивает из БД 10 последних сообщений.
+	 * 
+	 * Ввиду того, что JS нереально распараллелен, эта функция сама отправляет
+	 * все данные клиенту (пачкой)
+	 * 
+	 */
+	pool.getConnection(function(err, connection){
+		connection.query('select * from ad_3e3806afa571fe4.global_messages ORDER BY id DESC LIMIT 10', function(err, rows){
+			if(err) throw err;
+			else {
+				s.emit('last messages',rows);
+			}
+		});
+		
+		connection.release();//release the connection
+	});
+	console.log('TESTESTESTETSETSETSETSETSETSETSETSETSETSETSETSETSETSETEST');
+}
+
+//LOAD SERVER
+http.listen(httport, function () {
+	//var conuser = connection.config.user+'@'+connection.config.host;
+	var conuser = pool.config.user+'@'+pool.config.host;
+	
+	/*
+	console.log('listening on *:' + httport);
+	
+	
+	pool.getConnection(function(err, connection){    
+		//run the query
+		connection.query('select * from ad_3e3806afa571fe4.global_messages ORDER BY id DESC LIMIT 10', function(err, rows){
+			if(err) throw err;
+			else {
+				console.log(rows);
+			}
+		});
+		
+		connection.release();//release the connection
+	});*/
 	
 		//connection.end();
 	

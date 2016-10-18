@@ -127,8 +127,21 @@
 				}
 				
 				users_list = $('#user-list').children().children();
+			});
+			
+			socket.on('last messages', function (msg) {
+				/* Получает сообщения, которые были написаны до того,
+				 * как подключился пользователь.
+				 * 
+				 */
 				
-				
+				for (var i = msg.length-1; i>=0; i--){
+					chatMessage(msg[i].nick,
+								msg[i].msg,
+								msg[i].time);
+				}
+				 
+				 
 			});
 			
 			/*$(window).resize( function () {
@@ -168,26 +181,35 @@
 		
 		//$(window).resize( function () { $('#main-div').children().height($(window).height()-40); });
 		 
-		function chatMessage(user, msg){
+		function chatMessage(user, msg, time){
 			/* Функция вставки сообщений от пользователей.
 			 * 
 			 * Вид: [ВРЕМЯ] ИМЯ_ПОЛЬЗОВАТЕЛЯ: СООБЩЕНИЕ
 			 * 
+			 * Если в функцию не был передан параметр time, то автоматически
+			 * ставится текущее время сообщения.
+			 * 
 			 */
-			var time = '[' + getTime() + '] ' + user + ': ';
-			//$('#messages').append($('<li>').append($('<span>').addClass('time').text('[' + getTime() + ' | ' + user + '] ')).text(msg));
+			 
+			 /*
+			if (time === undefined){
+				time = getTime();
+			}*/
+						
+			var infoField = '[' + getTime(time) + '] ' + user + ': ';
+			//$('#messages').append($('<li>').append($('<span>').addClass('infoField').text('[' + getTime() + ' | ' + user + '] ')).text(msg));
 			$('#messages').append($('<li>')
-			.append($('<span>').text(time).addClass('time'))
+			.append($('<span>').text(infoField).addClass('time'))
 			.append($('<span>').text(msg)));
 			
 			chatScroll();
 		}
 		 
-		function getTime(){
+		function getTime(time){
 			/* Функция просто возвращает время в одном формате для всех сообщений.
 			 * 
 			 */
-			return moment().format('DD-MM-YYYY HH:mm:ss');
+			return moment(time).format('DD-MM-YYYY HH:mm:ss');
 		}
 		
 		function fullScreen(){
