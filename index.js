@@ -17,6 +17,7 @@ try {
 	mysqlinfo = require('./mysql.json');
 } catch(e) {
 	mysqlinfo = {
+		connectionLimit : 3,
 		host:     'localhost',
 		user:     'userName',
 		password: 'secret',
@@ -24,8 +25,8 @@ try {
 	}
 }
 
-var connection = mysql.createConnection(mysqlinfo);
-
+//var connection = mysql.createConnection(mysqlinfo);
+var pool  = mysql.createPool(mysqlinfo);
 
 // порт для прослушки адреса в http запросе
 // process.env.PORT -- for Bluemix
@@ -246,10 +247,86 @@ function isBanned(ip){
 
 //LOAD SERVER
 http.listen(httport, function () {
-	var conuser = connection.config.user+'@'+connection.config.host;
+	//var conuser = connection.config.user+'@'+connection.config.host;
+	var conuser = pool.config.user+'@'+pool.config.host;
 	
 	console.log('listening on *:' + httport);
 	
+	
+	pool.getConnection(function(err, connection){    
+		//run the query
+		connection.query('select * from ad_3e3806afa571fe4.global_messages', function(err, rows){
+			if(err) throw err;
+			else {
+				console.log(rows);
+			}
+		});
+		
+		connection.release();//release the connection
+	});
+	
+		//connection.end();
+	
+	/*
+	connection.query('SELECT 1', function(err, rows) {
+		
+		console.log('Ошибочка вышла '+conuser);
+	});
+	
+		//connection.end();
+		
+		
+	connection.query('SELECT 1', function(err, rows) {
+		
+		console.log('4 '+conuser);
+	});
+	
+		connection.end();
+			connection.query('SELECT 1', function(err, rows) {
+		
+		console.log('3 '+conuser);
+	});
+	
+		connection.end();
+			connection.query('SELECT 1', function(err, rows) {
+		
+		console.log('2 '+conuser);
+	});
+	
+		connection.end();
+			connection.query('SELECT 1', function(err, rows) {
+		
+		console.log('1 '+conuser);
+	});
+	
+		console.log('СЫШ ЧО '+conuser);
+	
+		connection.end();
+		
+		*/
+	
+	/*
+	pool.query('SELECT 1 + 1 AS solution', function(err, rows, fields) {
+		if (err) throw err;
+		console.log('The solution is: ', rows[0].solution);
+	});
+	
+	pool.query('SELECT 1 + 1 AS solution', function(err, rows, fields) {
+		if (err) throw err;
+		console.log('The solution is: ', rows[0].solution);
+	});
+	
+	pool.query('SELECT 1 + 1 AS solution', function(err, rows, fields) {
+		if (err) throw err;
+		console.log('The solution is: ', rows[0].solution);
+	});
+	*/
+	
+	
+	
+	
+	
+	/*
 	try {
 		connection.connect();
 		console.log('Successful connection to '+conuser);
@@ -257,7 +334,22 @@ http.listen(httport, function () {
 		console.error("CAN'T CONNECTED TO BD "+conuser+"!!!");
 		console.log(e);
 	} finally {
-		connection.end();
+		connection.destroy();
+		console.error("Connection has been closed");
 	}
+	
+	
+	
+	connection.connect(function(err) {
+	if (err) {
+		console.error("CAN'T CONNECTED TO BD "+conuser+"!!!"+err.stack);
+		return;
+	}
+		
+	console.log('Successful connection to '+conuser);
+	});
+	connection.destroy();
+	console.log('Successful connection to '+conuser);
+	*/
 	
 });
